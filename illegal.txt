@@ -1,0 +1,23 @@
+.
+├── compress_to_text.sh
+└── illegal.txt
+
+1 directory, 2 files
+compress_to_text.sh
+illegal.txt
+--------------------------
+compress_to_text.sh
+illegal.txt
+--------------------------
+compress_to_text.sh
+illegal.txt
+--------------------------
+compress_to_text.sh
+illegal.txt
+--------------------------
+compress_to_text.sh
+illegal.txt
+--------------------------
+compress_to_text.sh
+illegal.txt
+--------------------------

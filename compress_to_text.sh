@@ -33,8 +33,17 @@ if [[ $# -eq 0 ]]; then
 fi
 
 
+function delim(){
+cat <<EOF >> $log_file
+--------------------------
+EOF
+return 0;
+}
 
-ignored=(".git" )
+
+
+
+ignored=(.git )
 
 
 # Get the current directory
@@ -43,31 +52,16 @@ cwd=$($0)
 # Create a log file
 log_file="illegal.txt"
 files=()
-lines=$(find | tr '\n' ' ')
+lines=$(find $cwd | tr '\n' ' ')
 
 touch $log_file
 
 #adding visual tree representation to the file
 tree $cwd >> $log_file&
 
-function delim(){
-cat <<EOF >> $log_file
---------------------------
-EOF
-return 0;
-}
-
 find * >> $log_file
 
-cat <<EOF >> $log_file
---------------------------
-EOF
-j=0
-for i in $files; do
-	$j=$j+1
-	echo $j
-done
-
+delim
 
  echo $lines
  for line in $lines; do
