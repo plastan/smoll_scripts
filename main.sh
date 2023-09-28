@@ -22,18 +22,17 @@ Examples:
 EOF
 }
 
-
-
-
-
-
-
-
-
 function delim(){
 cat <<EOF >> $log_file
 
 --------------------------
+EOF
+    return 0;
+}
+function delim2(){
+cat <<EOF >> $log_file
+
++++++++++++++++++++++++++
 EOF
     return 0;
 }
@@ -57,7 +56,7 @@ function compress(){
     
     delim
     files=()
-    lines=$(find $dir -type f -name "*.c" | tr '\n' ' ')
+    lines=$(find $dir -type f -name "*.py" | tr '\n' ' ')
     # find h -type f -name "*.java" -o -name "*.py"
     
     # echo -n $lines
@@ -65,17 +64,17 @@ function compress(){
     touch $log_file
     
     
-    delim
-    tree $dir >> $log_file
-    
-    delim
+    # delim
+    # tree $dir >> $log_file
+    # delim
     
     for i in ${lines[@]}; do
-        
+        delim2
         echo -n "$i" >> $log_file
         delim
         cat $i >> $log_file
         delim
+
     done
     
 }
