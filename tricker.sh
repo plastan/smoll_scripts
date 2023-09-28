@@ -74,26 +74,87 @@ function compress(){
         delim
         cat $i >> $log_file
         delim
-
+        
     done
     
 }
 
-function extract(){
-    #get file
-    dd="--------------------------"
-    file=$1
-
-    sos=$(cat "$file")
-    for line in $sos;
-    do 
-    if $line = $dd; then
-    echo $line
+function toggle_flag() {
+    if [ "$del_flag" = true ]; then
+        del_flag=false
+    else
+        del_flag=true
     fi
-    done
 }
+dir_made=false
+file_open=true
+file_path=" "
+file=$1
+dest="dest"
+fc=false
+write=false
+del_flag=false
+dd="--------------------------"
+dd2="+++++++++++++++++++++++++"
 
-
+function extract(){
+    while IFS= read -r line; do
+        if [ "$line" = "$dd" ];then
+            toggle_flag
+            if [ "$file_open" = true ];then
+                file_open=false
+            fi
+            if [ '$write' = true ];then
+                write=false
+                echo "wrote to file $file_path"
+            fi
+            continue 1
+        fi
+        
+        if [ "$line" = "" ];then
+            continue 1
+        fi
+        # <generating folders>
+        if [ "$dir_made" = false ]; then
+            for i in ${line[@]}; do
+                #            echo -e "\nmaking dir $i "
+                mkdir -p "./dest/$i"
+            done
+            dir_made=true
+        fi
+        
+        
+        if [ "$line" = "$dd2" ];then
+            file_open=true
+            fc=true
+            echo "$fc"
+            continue 1
+        fi
+        
+        
+        if [ "$fc" = true ];then
+            #        echo -e "\nfile created $line"
+            echo "$line"
+            touch "./dest/$line"
+            file_path="./dest/$line"
+            file_open=true
+            fc=false
+            write=true
+            continue 1
+        fi
+        
+        if [ "$write" = true ] && [ "$fc" = false ]; then
+            
+            echo -e "$line" >> "$file_path"
+            
+            
+        fi
+        
+    done < "$file"
+    
+    
+    
+}
 
 # <TODO>
 # check $1 is a directory
@@ -106,6 +167,11 @@ for i in ${@:2:largs}; do
     case $i in
         -e|--extract)
             echo "extracting -----"
+            extract
+            # echo "extra?"
+        shift;;
+        -c|--compress)
+            echo "compressing -----"
             compress
             echo "saved as illegal.txt"
         shift;;
@@ -120,11 +186,3 @@ for i in ${@:2:largs}; do
     esac
 done
 
-
-toggle_flag() {
-    if [ "$bla_flag" = true ]; then
-        bla_flag=false
-    else
-        bla_flag=true
-    fi
-}
